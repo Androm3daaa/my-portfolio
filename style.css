@@ -536,6 +536,15 @@ section {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.card-preview--icon {
+  background: #000;
+}
+
+.card-preview--icon img {
+  object-fit: contain;
+  object-position: center;
+}
+
 .project-card-mac:hover .card-preview img {
   transform: scale(1.03);
 }
