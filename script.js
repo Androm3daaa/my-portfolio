@@ -1,178 +1,244 @@
-// ========================================
-// MOBILE MENU TOGGLE
-// ========================================
-function toggleMenu() {
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.querySelector('.mobile-menu-btn');
-  menu.classList.toggle('active');
-  btn.classList.toggle('active');
-}
+(function () {
+  'use strict';
 
-document.querySelectorAll('.mobile-menu a').forEach(link => {
-  link.addEventListener('click', () => {
-    document.getElementById('mobileMenu').classList.remove('active');
-    document.querySelector('.mobile-menu-btn').classList.remove('active');
-  });
-});
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// ========================================
-// COPY EMAIL TO CLIPBOARD
-// ========================================
-function copyEmail() {
-  const email = 'janreybalabis23@gmail.com';
-  navigator.clipboard.writeText(email).then(() => {
-    showToast('Email copied to clipboard!');
-  }).catch(() => {
-    const textarea = document.createElement('textarea');
-    textarea.value = email;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    showToast('Email copied to clipboard!');
-  });
-}
+  // ========================================
+  // MOBILE MENU
+  // ========================================
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuBtn = document.querySelector('.mobile-menu-btn');
+  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
-// ========================================
-// TOAST NOTIFICATION
-// ========================================
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  const toastMessage = toast.querySelector('.toast-message');
-  toastMessage.textContent = message;
-  toast.classList.add('visible');
-  setTimeout(() => {
-    toast.classList.remove('visible');
-  }, 3000);
-}
-
-// ========================================
-// PROJECT LINKS & HOVER EFFECTS
-// ========================================
-function openProject(url) {
-  if (url) {
-    window.open(url, '_blank', 'noopener,noreferrer');
+  function setMenuOpen(open) {
+    menuBtn.classList.toggle('active', open);
+    mobileMenu.classList.toggle('active', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    mobileMenu.setAttribute('aria-hidden', String(!open));
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.style.overflow = open ? 'hidden' : '';
   }
-}
 
-document.querySelectorAll('.project-card-mac').forEach(card => {
-  const url = card.dataset.projectUrl;
+  function toggleMenu() {
+    setMenuOpen(!mobileMenu.classList.contains('active'));
+  }
 
-  card.addEventListener('click', () => openProject(url));
-  card.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      openProject(url);
+  menuBtn.addEventListener('click', toggleMenu);
+
+  mobileMenu.querySelector('.mobile-menu-backdrop').addEventListener('click', () => setMenuOpen(false));
+
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+      setMenuOpen(false);
+      menuBtn.focus();
     }
   });
 
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    card.style.setProperty('--mouse-x', `${x}%`);
-    card.style.setProperty('--mouse-y', `${y}%`);
-  });
-});
+  // ========================================
+  // COPY EMAIL
+  // ========================================
+  const EMAIL = 'janreybalabis23@gmail.com';
 
-// ========================================
-// SMOOTH SCROLL
-// ========================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      const navHeight = document.querySelector('.navbar').offsetHeight;
-      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = toast.querySelector('.toast-message');
+    toastMessage.textContent = message;
+    toast.classList.add('visible');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => toast.classList.remove('visible'), 3000);
+  }
+
+  function copyEmail() {
+    const fallback = () => {
+      const textarea = document.createElement('textarea');
+      textarea.value = EMAIL;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('Email copied to clipboard!');
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(EMAIL).then(
+        () => showToast('Email copied to clipboard!'),
+        fallback
+      );
+    } else {
+      fallback();
+    }
+  }
+
+  document.getElementById('emailBtn').addEventListener('click', copyEmail);
+
+  // ========================================
+  // PROJECT CARDS
+  // ========================================
+  function openProject(url) {
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    const url = card.dataset.projectUrl;
+
+    card.addEventListener('click', () => openProject(url));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openProject(url);
+      }
+    });
+
+    if (!prefersReducedMotion) {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mouse-x', `${x}%`);
+        card.style.setProperty('--mouse-y', `${y}%`);
       });
     }
   });
-});
 
-// ========================================
-// INTERSECTION OBSERVER FOR ANIMATIONS
-// ========================================
-const observerOptions = {
-  threshold: 0.1
-};
+  // ========================================
+  // SMOOTH SCROLL
+  // ========================================
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('in-view');
-    }
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (!target) return;
+
+      const navHeight = document.querySelector('.navbar').offsetHeight;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+
+      window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    });
   });
-}, observerOptions);
 
-document.querySelectorAll('.project-card-mac, .philosophy-item, .section-header').forEach(el => {
-  observer.observe(el);
-});
+  // ========================================
+  // INTERSECTION OBSERVER
+  // ========================================
+  const revealEls = document.querySelectorAll(
+    '.section-header, .project-card, .philosophy-card, .contact-card'
+  );
 
-// ========================================
-// SCROLL PROGRESS BAR
-// ========================================
-const scrollProgress = document.querySelector('.scroll-progress');
+  revealEls.forEach(el => {
+    el.classList.add('reveal');
+  });
 
-window.addEventListener('scroll', () => {
-  const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  const scrolled = (window.scrollY / windowHeight) * 100;
-  scrollProgress.style.width = scrolled + '%';
-});
+  document.querySelectorAll('.projects-grid, .philosophy-grid').forEach(grid => {
+    grid.querySelectorAll('.project-card, .philosophy-card').forEach((card, i) => {
+      card.classList.add(`reveal-delay-${(i % 4) + 1}`);
+    });
+  });
 
-// ========================================
-// NAVBAR SCROLL EFFECT
-// ========================================
-const navbar = document.querySelector('.navbar');
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
 
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 100) {
-    navbar.style.background = 'rgba(6, 6, 12, 0.95)';
-  } else {
-    navbar.style.background = 'rgba(13, 13, 23, 0.85)';
+  revealEls.forEach(el => observer.observe(el));
+
+  // ========================================
+  // SCROLL PROGRESS
+  // ========================================
+  const scrollProgress = document.querySelector('.scroll-progress');
+
+  function updateScrollProgress() {
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
+    scrollProgress.style.width = `${scrolled}%`;
+    scrollProgress.setAttribute('aria-valuenow', Math.round(scrolled));
   }
-});
 
-// ========================================
-// TYPING ANIMATION
-// ========================================
-(function() {
+  // ========================================
+  // NAVBAR + ACTIVE SECTION
+  // ========================================
+  const navbar = document.querySelector('.navbar');
+  const navLinks = document.querySelectorAll('.nav-link[data-section]');
+  const sections = ['about', 'projects', 'philosophy', 'contact'].map(id => ({
+    id,
+    el: document.getElementById(id)
+  }));
+
+  function onScroll() {
+    updateScrollProgress();
+
+    navbar.classList.toggle('scrolled', window.scrollY > 48);
+
+    const scrollPos = window.scrollY + navbar.offsetHeight + 80;
+    let current = 'about';
+
+    sections.forEach(({ id, el }) => {
+      if (el && el.offsetTop <= scrollPos) current = id;
+    });
+
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.dataset.section === current);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ========================================
+  // TYPING ANIMATION
+  // ========================================
   const text = 'Jan Rey Balabis';
   const typingText = document.querySelector('.typing-text');
   const cursor = document.querySelector('.typing-cursor');
-  let index = 0;
-  let deleting = false;
-  let delay = 80;
-  
-  function type() {
-    if (!deleting) {
-      typingText.textContent = text.substring(0, index + 1);
-      index++;
-      
-      if (index === text.length) {
-        deleting = true;
-        delay = 2000; // Pause at end
+
+  if (prefersReducedMotion) {
+    typingText.textContent = text;
+    if (cursor) cursor.style.display = 'none';
+  } else {
+    let index = 0;
+    let deleting = false;
+
+    function type() {
+      let delay;
+
+      if (!deleting) {
+        typingText.textContent = text.substring(0, index + 1);
+        index++;
+        if (index === text.length) {
+          deleting = true;
+          delay = 2400;
+        } else {
+          delay = 70 + Math.random() * 50;
+        }
       } else {
-        delay = 80 + Math.random() * 40; // Vary speed
+        typingText.textContent = text.substring(0, index - 1);
+        index--;
+        if (index === 0) {
+          deleting = false;
+          delay = 600;
+        } else {
+          delay = 35;
+        }
       }
-    } else {
-      typingText.textContent = text.substring(0, index - 1);
-      index--;
-      
-      if (index === 0) {
-        deleting = false;
-        delay = 500; // Pause before retyping
-      } else {
-        delay = 40;
-      }
+
+      setTimeout(type, delay);
     }
-    
-    setTimeout(type, delay);
+
+    setTimeout(type, 800);
   }
-  
-  // Start typing after a short delay
-  setTimeout(type, 500);
 })();
