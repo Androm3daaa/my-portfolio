@@ -519,16 +519,25 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.code-editor {
+.card-preview {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  padding: 16px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8125rem;
-  color: #a5b4fc;
-  height: 100px;
   overflow: hidden;
+  height: 180px;
+}
+
+.card-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card-mac:hover .card-preview img {
+  transform: scale(1.03);
 }
 
 /* ========================================
