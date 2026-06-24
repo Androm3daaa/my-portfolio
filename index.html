@@ -127,97 +127,76 @@
       </div>
 
       <div class="projects-grid">
-        <!-- Empty Slot 1 -->
-        <div class="project-card-mac">
+        <!-- Andromeda -->
+        <div class="project-card-mac" data-project-url="https://github.com/Androm3daaa/Notes" tabindex="0" role="link" aria-label="Andromeda — view on GitHub">
           <div class="mac-header">
             <span class="dot red"></span>
             <span class="dot yellow"></span>
             <span class="dot green"></span>
           </div>
-          <h3 class="card-title">[ Empty Slot ]</h3>
+          <h3 class="card-title">Andromeda</h3>
           <p class="card-description">
-            No projects have been deployed here yet. Currently focusing on mastering the core fundamentals of development.
+            Personal encyclopedia site with full-text search. Markdown hubs and concepts rendered with Astro and indexed client-side via Pagefind, deployed on Cloudflare Pages.
           </p>
           <div class="card-tags">
-            <span class="card-tag">Learning</span>
-            <span class="card-tag">Building</span>
+            <span class="card-tag">Astro</span>
+            <span class="card-tag">Pagefind</span>
+            <span class="card-tag">Cloudflare</span>
           </div>
           <div class="code-editor">
-            <pre><code>// Current Status:
-const projects = [];
-const learning = true;
-
-if (projects.length === 0) {
-  console.log("Forge is open for ideas.");
-}</code></pre>
+            <pre><code>npm run build
+# static site + Pagefind index → dist/
+./deploy.sh
+# → notes-knowledge-base.pages.dev</code></pre>
           </div>
         </div>
 
-        <!-- Empty Slot 2 -->
-        <div class="project-card-mac">
+        <!-- Synapse -->
+        <div class="project-card-mac" data-project-url="https://github.com/Androm3daaa/Synapse" tabindex="0" role="link" aria-label="Synapse — view on GitHub">
           <div class="mac-header">
             <span class="dot red"></span>
             <span class="dot yellow"></span>
             <span class="dot green"></span>
           </div>
-          <h3 class="card-title">[ Empty Slot ]</h3>
+          <h3 class="card-title">Synapse</h3>
           <p class="card-description">
-            The forge is waiting for its first major build. Mastering the stack before shipping the first project.
+            Android workflow automation platform — connect apps, run AI-assisted steps, approve actions, then execute. One hub for business workflows beyond email and calendar.
           </p>
           <div class="card-tags">
-            <span class="card-tag">Research</span>
-            <span class="card-tag">Setup</span>
+            <span class="card-tag">Android</span>
+            <span class="card-tag">Kotlin</span>
+            <span class="card-tag">AI</span>
           </div>
           <div class="code-editor">
-            <pre><code>/* 
- * System under construction.
- * No data found in this directory.
- */
-ls -la ./projects
-# total 0</code></pre>
+            <pre><code>// Connectors: Gmail, Google Calendar
+workflow.connect("gmail")
+  .then(step => ai.assist(step))
+  .then(approve)
+  .then(execute);</code></pre>
           </div>
         </div>
 
-        <!-- Empty Slot 3 -->
-        <div class="project-card-mac">
+        <!-- ALPAS -->
+        <div class="project-card-mac" data-project-url="https://github.com/Androm3daaa/alpas-simulation-project" tabindex="0" role="link" aria-label="ALPAS — view on GitHub">
           <div class="mac-header">
             <span class="dot red"></span>
             <span class="dot yellow"></span>
             <span class="dot green"></span>
           </div>
-          <h3 class="card-title">[ Empty Slot ]</h3>
+          <h3 class="card-title">ALPAS</h3>
           <p class="card-description">
-            Reserved for a future high-performance application. Currently experimenting with local LLMs and agent frameworks.
+            School fire and evacuation simulation platform. Agent-based evacuation modeling, fire dynamics, and interactive 2D/3D visualization for academic safety planning.
           </p>
           <div class="card-tags">
-            <span class="card-tag">Experimenting</span>
+            <span class="card-tag">React</span>
+            <span class="card-tag">FastAPI</span>
+            <span class="card-tag">Three.js</span>
           </div>
           <div class="code-editor">
-            <pre><code>// Thinking...
-await brainstorming();
-// No project committed yet.</code></pre>
-          </div>
-        </div>
-
-        <!-- Empty Slot 4 -->
-        <div class="project-card-mac">
-          <div class="mac-header">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-          </div>
-          <h3 class="card-title">[ Empty Slot ]</h3>
-          <p class="card-description">
-            Documentation and foundation building in progress. This slot will be filled once the code meets the standard.
-          </p>
-          <div class="card-tags">
-            <span class="card-tag">Locked</span>
-          </div>
-          <div class="code-editor">
-            <pre><code>git status
-# On branch main
-# nothing to commit, 
-# working tree clean</code></pre>
+            <pre><code>npm run dev
+# Frontend → localhost:5173
+# Backend  → localhost:8000
+runQuickAnalysis(scenario);</code></pre>
           </div>
         </div>
       </div>

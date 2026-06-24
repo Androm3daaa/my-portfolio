@@ -49,11 +49,23 @@ function showToast(message) {
 // ========================================
 // PROJECT LINKS & HOVER EFFECTS
 // ========================================
-function openProject(projectId) {
-  console.log('Opening project:', projectId);
+function openProject(url) {
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 }
 
 document.querySelectorAll('.project-card-mac').forEach(card => {
+  const url = card.dataset.projectUrl;
+
+  card.addEventListener('click', () => openProject(url));
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openProject(url);
+    }
+  });
+
   card.addEventListener('mousemove', e => {
     const rect = card.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
