@@ -581,6 +581,15 @@ button {
     0 0 8px var(--matrix-glow),
     0 0 24px rgba(0, 255, 65, 0.12);
   filter: drop-shadow(0 0 1px rgba(0, 255, 65, 0.5));
+  transition: opacity 0.35s var(--ease);
+}
+
+.ascii-art.hero-seq-pending {
+  opacity: 0;
+}
+
+.ascii-art.hero-seq-visible {
+  opacity: 0.72;
 }
 
 .boot-lines {
@@ -612,16 +621,60 @@ button {
     0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-.typing-cursor {
+.term-cursor {
   color: var(--matrix-bright);
   font-weight: 400;
-  animation: cursor-blink 1.1s step-end infinite;
+  display: none;
   text-shadow: 0 0 8px var(--matrix-glow);
+}
+
+.cmd-line.is-typing .term-cursor {
+  display: inline;
+  animation: cursor-blink 1.1s step-end infinite;
+}
+
+.cmd-line.is-typing .term-cursor.is-hidden {
+  display: none;
 }
 
 @keyframes cursor-blink {
   0%, 45% { opacity: 1; }
   50%, 100% { opacity: 0; }
+}
+
+/* Hero sequential animation states */
+.hero-terminal--animating .hero-seq-output {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.hero-seq-output.is-visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.25s var(--ease);
+}
+
+.hero-terminal--animating .tech-tag {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.tech-tag.is-visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  transform: translateY(0);
+}
+
+.hero-terminal--animating .tech-tag {
+  transform: translateY(4px);
+}
+
+.hero-terminal--ready .hero-seq-output,
+.hero-terminal--ready .tech-tag {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
 }
 
 .hero-role {
@@ -741,6 +794,19 @@ button {
 .hero-visual {
   position: sticky;
   top: calc(var(--nav-height) + 24px);
+  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+}
+
+.hero-visual--pending {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+.hero-visual--ready {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .frame-panel {
@@ -783,6 +849,18 @@ button {
 }
 
 .frame-status {
+  color: var(--matrix-bright);
+  text-shadow: 0 0 8px var(--matrix-glow);
+  animation: led-pulse 2.5s ease-in-out infinite;
+}
+
+.frame-status--boot {
+  color: var(--text-muted);
+  text-shadow: none;
+  animation: none;
+}
+
+.frame-status--live {
   color: var(--matrix-bright);
   text-shadow: 0 0 8px var(--matrix-glow);
   animation: led-pulse 2.5s ease-in-out infinite;
@@ -887,6 +965,23 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .frame-scan { animation: none; }
   .frame-panel:hover .frame-body img { transform: none; }
+
+  .hero-visual--pending {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .ascii-art.hero-seq-pending {
+    opacity: 0.72;
+  }
+
+  .hero-terminal--animating .hero-seq-output,
+  .hero-terminal--animating .tech-tag {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ========================================

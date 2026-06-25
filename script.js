@@ -99,28 +99,198 @@
   }
 
   // ========================================
-  // BOOT SEQUENCE
+  // HERO TERMINAL ANIMATION
   // ========================================
-  const bootLines = document.getElementById('bootLines');
+  const heroTerminal = document.getElementById('heroTerminal');
+  const heroAscii = document.getElementById('heroAscii');
+  const bootLinesEl = document.getElementById('bootLines');
+  const heroVisual = document.getElementById('heroVisual');
+  const frameStatus = document.getElementById('frameStatus');
 
-  if (bootLines && !prefersReducedMotion) {
-    const lines = [
-      { text: '[ OK ] Initializing janrey.dev v1.0.0...', cls: 'boot-ok' },
-      { text: '[ OK ] Loading kernel modules: html css js python', cls: 'boot-ok' },
-      { text: '[INFO] Location: Philippines (UTC+8)', cls: 'boot-info' },
-      { text: '[ OK ] Status: AVAILABLE', cls: 'boot-ok' },
-    ];
+  const BOOT_LINES = [
+    { text: '[ OK ] Initializing janrey.dev v1.0.0...', cls: 'boot-ok' },
+    { text: '[ OK ] Loading kernel modules: html css js python', cls: 'boot-ok' },
+    { text: '[INFO] Location: Philippines (UTC+8)', cls: 'boot-info' },
+    { text: '[ OK ] Status: AVAILABLE', cls: 'boot-ok' },
+  ];
 
-    let delay = 200;
-    lines.forEach(({ text, cls }) => {
-      setTimeout(() => {
-        const line = document.createElement('div');
-        line.className = cls;
-        line.textContent = text;
-        bootLines.appendChild(line);
-      }, delay);
-      delay += 280 + Math.random() * 120;
-    });
+  const CMD_CHAR_MS = 40;
+  const CMD_CHAR_JITTER = 12;
+  const PAUSE_AFTER_CMD = 100;
+  const PAUSE_AFTER_OUTPUT = 220;
+  const BOOT_LINE_MS = 260;
+  const BOOT_LINE_JITTER = 140;
+  const TAG_STAGGER_MS = 70;
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function appendBootLine(container, { text, cls }) {
+    const line = document.createElement('div');
+    line.className = cls;
+    line.textContent = text;
+    container.appendChild(line);
+  }
+
+  async function revealAsciiArt() {
+    if (!heroAscii) return;
+    heroAscii.classList.remove('hero-seq-pending');
+    heroAscii.classList.add('hero-seq-visible');
+    await delay(180);
+  }
+
+  async function typeCommand(cmdLine, text) {
+    const cmdSpan = cmdLine.querySelector('.cmd');
+    const cursor = cmdLine.querySelector('.term-cursor');
+    if (!cmdSpan) return;
+
+    cmdLine.classList.add('is-typing');
+    if (cursor) cursor.classList.remove('is-hidden');
+
+    for (let i = 0; i < text.length; i++) {
+      cmdSpan.textContent += text[i];
+      await delay(CMD_CHAR_MS + Math.random() * CMD_CHAR_JITTER);
+    }
+
+    cmdLine.classList.remove('is-typing');
+    if (cursor) cursor.classList.add('is-hidden');
+  }
+
+  function revealOutput(el) {
+    el.classList.add('is-visible');
+  }
+
+  async function revealTechStack(stackEl) {
+    stackEl.classList.add('is-visible');
+    const tags = stackEl.querySelectorAll('.tech-tag');
+    for (const tag of tags) {
+      tag.classList.add('is-visible');
+      await delay(TAG_STAGGER_MS + Math.random() * 30);
+    }
+  }
+
+  async function runBootSequence() {
+    for (const line of BOOT_LINES) {
+      appendBootLine(bootLinesEl, line);
+      await delay(BOOT_LINE_MS + Math.random() * BOOT_LINE_JITTER);
+    }
+  }
+
+  async function blinkPrompt(cmdLine, duration = 480) {
+    cmdLine.classList.add('is-typing');
+    const cursor = cmdLine.querySelector('.term-cursor');
+    if (cursor) cursor.classList.remove('is-hidden');
+    await delay(duration);
+    cmdLine.classList.remove('is-typing');
+    if (cursor) cursor.classList.add('is-hidden');
+  }
+
+  function activateFramebuffer() {
+    if (heroVisual) {
+      heroVisual.classList.remove('hero-visual--pending');
+      heroVisual.classList.add('hero-visual--ready');
+    }
+    if (frameStatus) {
+      frameStatus.textContent = '[LIVE]';
+      frameStatus.classList.remove('frame-status--boot');
+      frameStatus.classList.add('frame-status--live');
+    }
+  }
+
+  function showHeroImmediate() {
+    if (heroAscii) {
+      heroAscii.classList.remove('hero-seq-pending');
+      heroAscii.classList.add('hero-seq-visible');
+    }
+
+    if (bootLinesEl) {
+      BOOT_LINES.forEach(line => appendBootLine(bootLinesEl, line));
+      appendBootLine(bootLinesEl, { text: '[ OK ] Session ready.', cls: 'boot-ok' });
+    }
+
+    if (heroTerminal) {
+      heroTerminal.classList.remove('hero-terminal--animating');
+      heroTerminal.classList.add('hero-terminal--ready');
+
+      heroTerminal.querySelectorAll('.cmd-line[data-cmd]').forEach(cmdLine => {
+        const cmd = cmdLine.dataset.cmd;
+        const cmdSpan = cmdLine.querySelector('.cmd');
+        if (cmdSpan) cmdSpan.textContent = cmd;
+        cmdLine.querySelector('.term-cursor')?.remove();
+      });
+
+      heroTerminal.querySelectorAll('.hero-seq-output').forEach(el => {
+        el.classList.add('is-visible');
+      });
+
+      heroTerminal.querySelectorAll('.tech-tag').forEach(tag => {
+        tag.classList.add('is-visible');
+      });
+    }
+
+    activateFramebuffer();
+  }
+
+  async function runHeroAnimation() {
+    if (!heroTerminal) return;
+
+    heroTerminal.classList.add('hero-terminal--animating');
+
+    await revealAsciiArt();
+    await runBootSequence();
+    await delay(120);
+    activateFramebuffer();
+    await delay(200);
+
+    const blocks = heroTerminal.querySelectorAll('.hero-seq-block');
+
+    for (const block of blocks) {
+      if (block.classList.contains('hero-seq-block--actions')) continue;
+
+      const cmdLine = block.querySelector('.cmd-line[data-cmd]');
+      const output = block.querySelector('.hero-seq-output');
+
+      if (cmdLine) {
+        const cmd = cmdLine.dataset.cmd;
+        if (cmd) {
+          await typeCommand(cmdLine, cmd);
+          await delay(PAUSE_AFTER_CMD + Math.random() * 60);
+        }
+      }
+
+      if (output) {
+        if (output.classList.contains('tech-stack')) {
+          await revealTechStack(output);
+        } else {
+          revealOutput(output);
+        }
+        await delay(PAUSE_AFTER_OUTPUT + Math.random() * 80);
+      }
+    }
+
+    appendBootLine(bootLinesEl, { text: '[ OK ] Session ready.', cls: 'boot-ok' });
+    await delay(280);
+
+    const actionsBlock = heroTerminal.querySelector('.hero-seq-block--actions');
+    if (actionsBlock) {
+      const promptLine = actionsBlock.querySelector('.cmd-line');
+      const actions = actionsBlock.querySelector('.hero-actions');
+
+      if (promptLine) await blinkPrompt(promptLine, 520);
+      if (actions) revealOutput(actions);
+    }
+
+    heroTerminal.classList.remove('hero-terminal--animating');
+    heroTerminal.classList.add('hero-terminal--ready');
+  }
+
+  if (heroTerminal) {
+    if (prefersReducedMotion) {
+      showHeroImmediate();
+    } else {
+      runHeroAnimation();
+    }
   }
 
   // ========================================
@@ -320,29 +490,4 @@
 
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  // ========================================
-  // TYPING ANIMATION
-  // ========================================
-  const nameText = 'Jan Rey Balabis';
-  const typingText = document.querySelector('.typing-text');
-  const cursor = document.querySelector('.typing-cursor');
-
-  if (prefersReducedMotion) {
-    typingText.textContent = nameText;
-    if (cursor) cursor.style.display = 'none';
-  } else {
-    let index = 0;
-
-    function type() {
-      typingText.textContent = nameText.substring(0, index + 1);
-      index++;
-
-      if (index < nameText.length) {
-        setTimeout(type, 55 + Math.random() * 35);
-      }
-    }
-
-    setTimeout(type, 1400);
-  }
 })();

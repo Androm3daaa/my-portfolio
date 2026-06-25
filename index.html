@@ -92,7 +92,7 @@
           <span class="term-title">janrey.dev: ~/profile — bash</span>
         </div>
         <div class="term-body">
-          <pre class="ascii-art" aria-hidden="true">       _                            
+          <pre class="ascii-art hero-seq-pending" id="heroAscii" aria-hidden="true">       _                            
       (_) __ _ _ __  _ __ ___ _   _ 
       | |/ _` | '_ \| '__/ _ \ | | |
       | | (_| | | | | | |  __/ |_| |
@@ -101,71 +101,82 @@
            janrey.dev v1.0.0</pre>
 
           <div class="hero-grid">
-            <div class="hero-terminal">
+            <div class="hero-terminal" id="heroTerminal">
               <div class="boot-lines" id="bootLines" aria-hidden="true"></div>
 
-              <p class="cmd-line">
-                <span class="prompt">janrey.dev:~$</span>
-                <span class="cmd">whoami</span>
-              </p>
-              <h1 class="hero-name glitch" data-text="Jan Rey Balabis">
-                <span class="typing-text" aria-label="Jan Rey Balabis"></span><span class="typing-cursor" aria-hidden="true">_</span>
-              </h1>
-
-              <p class="cmd-line">
-                <span class="prompt">janrey.dev:~$</span>
-                <span class="cmd">cat role.txt</span>
-              </p>
-              <p class="hero-role">Developer</p>
-
-              <p class="cmd-line">
-                <span class="prompt">janrey.dev:~$</span>
-                <span class="cmd">cat bio.md</span>
-              </p>
-              <p class="hero-bio">
-                I build secure, scalable software with detail-driven interfaces
-                and clean architecture — experiences that actually work.
-              </p>
-
-              <p class="cmd-line">
-                <span class="prompt">janrey.dev:~$</span>
-                <span class="cmd">geoip lookup</span>
-              </p>
-              <p class="hero-location">
-                <span class="loc-icon" aria-hidden="true">></span> Philippines
-              </p>
-
-              <p class="cmd-line">
-                <span class="prompt">janrey.dev:~$</span>
-                <span class="cmd">ls stack/</span>
-              </p>
-              <div class="tech-stack" aria-label="Technologies">
-                <span class="tech-tag">HTML</span>
-                <span class="tech-tag">CSS</span>
-                <span class="tech-tag">JavaScript</span>
-                <span class="tech-tag">Python</span>
-                <span class="tech-tag">C++</span>
-                <span class="tech-tag">Java</span>
+              <div class="hero-seq-block">
+                <p class="cmd-line" data-cmd="whoami">
+                  <span class="prompt">janrey.dev:~$</span>
+                  <span class="cmd"></span><span class="term-cursor" aria-hidden="true">_</span>
+                </p>
+                <h1 class="hero-name glitch hero-seq-output" data-text="Jan Rey Balabis">Jan Rey Balabis</h1>
               </div>
 
-              <p class="cmd-line cmd-line--actions">
-                <span class="prompt">janrey.dev:~$</span>
-              </p>
-              <div class="hero-actions">
-                <a href="assets/pdf/JANREY BALABIS - CV.pdf" target="_blank" rel="noopener" class="cmd-btn cmd-btn--primary">
-                  <span class="cmd-btn-prefix">$</span> ./download_cv.sh
-                </a>
-                <a href="#projects" class="cmd-btn">
-                  <span class="cmd-btn-prefix">></span> view_projects
-                </a>
+              <div class="hero-seq-block">
+                <p class="cmd-line" data-cmd="cat role.txt">
+                  <span class="prompt">janrey.dev:~$</span>
+                  <span class="cmd"></span><span class="term-cursor" aria-hidden="true">_</span>
+                </p>
+                <p class="hero-role hero-seq-output">Developer</p>
+              </div>
+
+              <div class="hero-seq-block">
+                <p class="cmd-line" data-cmd="cat bio.md">
+                  <span class="prompt">janrey.dev:~$</span>
+                  <span class="cmd"></span><span class="term-cursor" aria-hidden="true">_</span>
+                </p>
+                <p class="hero-bio hero-seq-output">
+                  I build secure, scalable software with detail-driven interfaces
+                  and clean architecture — experiences that actually work.
+                </p>
+              </div>
+
+              <div class="hero-seq-block">
+                <p class="cmd-line" data-cmd="geoip lookup">
+                  <span class="prompt">janrey.dev:~$</span>
+                  <span class="cmd"></span><span class="term-cursor" aria-hidden="true">_</span>
+                </p>
+                <p class="hero-location hero-seq-output">
+                  <span class="loc-icon" aria-hidden="true">></span> Philippines
+                </p>
+              </div>
+
+              <div class="hero-seq-block">
+                <p class="cmd-line" data-cmd="ls stack/">
+                  <span class="prompt">janrey.dev:~$</span>
+                  <span class="cmd"></span><span class="term-cursor" aria-hidden="true">_</span>
+                </p>
+                <div class="tech-stack hero-seq-output" aria-label="Technologies">
+                  <span class="tech-tag">HTML</span>
+                  <span class="tech-tag">CSS</span>
+                  <span class="tech-tag">JavaScript</span>
+                  <span class="tech-tag">Python</span>
+                  <span class="tech-tag">C++</span>
+                  <span class="tech-tag">Java</span>
+                </div>
+              </div>
+
+              <div class="hero-seq-block hero-seq-block--actions">
+                <p class="cmd-line cmd-line--actions" data-cmd="">
+                  <span class="prompt">janrey.dev:~$</span>
+                  <span class="cmd"></span><span class="term-cursor" aria-hidden="true">_</span>
+                </p>
+                <div class="hero-actions hero-seq-output">
+                  <a href="assets/pdf/JANREY BALABIS - CV.pdf" target="_blank" rel="noopener" class="cmd-btn cmd-btn--primary">
+                    <span class="cmd-btn-prefix">$</span> ./download_cv.sh
+                  </a>
+                  <a href="#projects" class="cmd-btn">
+                    <span class="cmd-btn-prefix">></span> view_projects
+                  </a>
+                </div>
               </div>
             </div>
 
-            <div class="hero-visual">
+            <div class="hero-visual hero-visual--pending" id="heroVisual">
               <div class="frame-panel">
                 <div class="frame-header" aria-hidden="true">
                   <span>framebuffer://profile.jpg</span>
-                  <span class="frame-status">[LIVE]</span>
+                  <span class="frame-status frame-status--boot" id="frameStatus">[BOOT]</span>
                 </div>
                 <div class="frame-body">
                   <div class="frame-hex" aria-hidden="true"></div>
