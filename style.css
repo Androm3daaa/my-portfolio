@@ -790,20 +790,10 @@ button {
   box-shadow: 0 0 12px rgba(0, 255, 65, 0.15);
 }
 
-/* Profile frame */
+/* Profile frame — visible immediately; only left terminal animates */
 .hero-visual {
   position: sticky;
   top: calc(var(--nav-height) + 24px);
-  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
-}
-
-.hero-visual--pending {
-  opacity: 0;
-  transform: translateY(12px);
-  pointer-events: none;
-}
-
-.hero-visual--ready {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -965,12 +955,6 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .frame-scan { animation: none; }
   .frame-panel:hover .frame-body img { transform: none; }
-
-  .hero-visual--pending {
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
-  }
 
   .ascii-art.hero-seq-pending {
     opacity: 0.72;

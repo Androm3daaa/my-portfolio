@@ -235,13 +235,12 @@
   async function runHeroAnimation() {
     if (!heroTerminal) return;
 
+    activateFramebuffer();
     heroTerminal.classList.add('hero-terminal--animating');
 
     await revealAsciiArt();
     await runBootSequence();
     await delay(120);
-    activateFramebuffer();
-    await delay(200);
 
     const blocks = heroTerminal.querySelectorAll('.hero-seq-block');
 
