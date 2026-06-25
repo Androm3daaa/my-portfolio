@@ -22,33 +22,61 @@
       w = matrixCanvas.width = window.innerWidth;
       h = matrixCanvas.height = window.innerHeight;
       const colCount = Math.floor(w / fontSize);
-      columns = Array.from({ length: colCount }, () => Math.random() * h / fontSize);
+      columns = Array.from({ length: colCount }, () => ({
+        y: Math.random() * h / fontSize,
+        speed: 0.4 + Math.random() * 0.8,
+        depth: 0.3 + Math.random() * 0.7,
+      }));
+    }
+
+    function edgeFade(x, y) {
+      const cx = w * 0.5;
+      const cy = h * 0.45;
+      const dx = (x - cx) / (w * 0.5);
+      const dy = (y - cy) / (h * 0.5);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const edge = Math.max(0, 1 - Math.pow(dist, 1.8));
+      const vertical = 1 - Math.abs(y - h * 0.15) / (h * 0.85);
+      return Math.min(edge, 0.35 + vertical * 0.65);
     }
 
     function drawMatrix() {
-      ctx.fillStyle = 'rgba(3, 3, 3, 0.08)';
+      ctx.fillStyle = 'rgba(5, 6, 8, 0.1)';
       ctx.fillRect(0, 0, w, h);
 
-      ctx.font = `${fontSize}px JetBrains Mono, monospace`;
-
       for (let i = 0; i < columns.length; i++) {
+        const col = columns[i];
         const char = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
-        const y = columns[i] * fontSize;
+        const y = col.y * fontSize;
+        const fade = edgeFade(x, y) * col.depth;
 
-        const brightness = Math.random();
-        ctx.fillStyle = brightness > 0.95
-          ? '#ffffff'
-          : brightness > 0.8
-            ? '#00ffff'
-            : '#00ff41';
+        if (fade < 0.05) {
+          col.y += col.speed;
+          if (y > h && Math.random() > 0.975) col.y = 0;
+          continue;
+        }
 
+        const size = fontSize * (0.85 + col.depth * 0.3);
+        ctx.font = `${size}px JetBrains Mono, monospace`;
+
+        const roll = Math.random();
+        let r, g, b, a;
+        if (roll > 0.97) {
+          r = 255; g = 255; b = 255; a = fade * 0.9;
+        } else if (roll > 0.82) {
+          r = 0; g = 232; b = 255; a = fade * 0.75;
+        } else {
+          r = 0; g = 255; b = 65; a = fade * (0.35 + col.depth * 0.45);
+        }
+
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
         ctx.fillText(char, x, y);
 
+        col.y += col.speed;
         if (y > h && Math.random() > 0.975) {
-          columns[i] = 0;
-        } else {
-          columns[i]++;
+          col.y = 0;
+          col.depth = 0.3 + Math.random() * 0.7;
         }
       }
 
@@ -77,7 +105,7 @@
 
   if (bootLines && !prefersReducedMotion) {
     const lines = [
-      { text: '[ OK ] Initializing janrey.dev v2.0.26...', cls: 'boot-ok' },
+      { text: '[ OK ] Initializing janrey.dev v1.0.0...', cls: 'boot-ok' },
       { text: '[ OK ] Loading kernel modules: html css js python', cls: 'boot-ok' },
       { text: '[INFO] Location: Philippines (UTC+8)', cls: 'boot-info' },
       { text: '[ OK ] Status: AVAILABLE', cls: 'boot-ok' },
@@ -148,6 +176,22 @@
   }
 
   function copyEmail() {
+    const emailBtn = document.getElementById('emailBtn');
+    const hint = emailBtn?.querySelector('.email-hint');
+
+    const onCopied = () => {
+      showToast('Email copied to clipboard!');
+      if (emailBtn) {
+        emailBtn.classList.add('copied');
+        if (hint) hint.textContent = '// copied to clipboard';
+        clearTimeout(copyEmail._resetTimer);
+        copyEmail._resetTimer = setTimeout(() => {
+          emailBtn.classList.remove('copied');
+          if (hint) hint.textContent = '// click to copy';
+        }, 2500);
+      }
+    };
+
     const fallback = () => {
       const textarea = document.createElement('textarea');
       textarea.value = EMAIL;
@@ -158,14 +202,11 @@
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      showToast('Email copied to clipboard!');
+      onCopied();
     };
 
     if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(EMAIL).then(
-        () => showToast('Email copied to clipboard!'),
-        fallback
-      );
+      navigator.clipboard.writeText(EMAIL).then(onCopied, fallback);
     } else {
       fallback();
     }
@@ -234,6 +275,17 @@
   );
 
   revealEls.forEach(el => observer.observe(el));
+
+  // Hero is above the fold — reveal immediately when visible
+  const heroWindow = document.querySelector('.term-window--hero.reveal');
+  if (heroWindow) {
+    requestAnimationFrame(() => {
+      if (heroWindow.getBoundingClientRect().top < window.innerHeight) {
+        heroWindow.classList.add('in-view');
+        observer.unobserve(heroWindow);
+      }
+    });
+  }
 
   // ========================================
   // SCROLL PROGRESS + ACTIVE NAV
