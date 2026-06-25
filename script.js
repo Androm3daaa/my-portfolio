@@ -261,32 +261,18 @@
     if (cursor) cursor.style.display = 'none';
   } else {
     let index = 0;
-    let deleting = false;
 
     function type() {
-      let delay;
+      typingText.textContent = text.substring(0, index + 1);
+      index++;
 
-      if (!deleting) {
-        typingText.textContent = text.substring(0, index + 1);
-        index++;
-        if (index === text.length) {
-          deleting = true;
-          delay = 2400;
-        } else {
-          delay = 70 + Math.random() * 50;
-        }
-      } else {
-        typingText.textContent = text.substring(0, index - 1);
-        index--;
-        if (index === 0) {
-          deleting = false;
-          delay = 600;
-        } else {
-          delay = 35;
-        }
+      if (index < text.length) {
+        setTimeout(type, 65 + Math.random() * 40);
+      } else if (cursor) {
+        setTimeout(() => {
+          cursor.style.opacity = '0';
+        }, 2000);
       }
-
-      setTimeout(type, delay);
     }
 
     setTimeout(type, 800);
@@ -308,7 +294,7 @@
     function resizeAmbient() {
       width = ambientCanvas.width = window.innerWidth;
       height = ambientCanvas.height = window.innerHeight;
-      const count = width < 768 ? 40 : 70;
+      const count = width < 768 ? 28 : 45;
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -332,7 +318,7 @@
         if (p.y > height) p.y = 0;
 
         const size = 1 + p.z * 2;
-        const alpha = (0.15 + p.z * 0.35) * scrollFade;
+        const alpha = (0.1 + p.z * 0.22) * scrollFade;
         ctx.beginPath();
         ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
         ctx.fillStyle = i % 5 === 0

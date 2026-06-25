@@ -31,6 +31,7 @@
   --radius-sm: 10px;
 
   --font-display: 'Syne', system-ui, sans-serif;
+  --font-hero: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
@@ -459,9 +460,9 @@ button {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
   align-items: center;
-  gap: clamp(40px, 6vw, 80px);
+  gap: clamp(48px, 7vw, 96px);
 }
 
 .hero-content > * {
@@ -499,28 +500,31 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
-  font-size: 0.8125rem;
+  margin-bottom: 16px;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
 .hero-name {
-  font-family: var(--font-display);
-  font-size: clamp(2.75rem, 7vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  margin-bottom: 12px;
+  font-family: var(--font-hero);
+  font-size: clamp(2.25rem, 4.8vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
   color: var(--text);
+  max-width: 14ch;
 }
 
 .typing-cursor {
   color: var(--accent);
-  font-weight: 400;
+  font-weight: 500;
+  margin-left: 2px;
   animation: blink 1s step-end infinite;
+  transition: opacity 0.6s ease;
 }
 
 @keyframes blink {
@@ -528,25 +532,26 @@ button {
 }
 
 .hero-role {
-  font-family: var(--font-display);
-  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-family: var(--font-hero);
+  font-size: clamp(1.0625rem, 2vw, 1.25rem);
   font-weight: 600;
   color: var(--accent);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .hero-desc {
-  max-width: 520px;
-  font-size: 1.0625rem;
+  max-width: 480px;
+  font-size: 1rem;
+  line-height: 1.7;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .hero-location {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   font-size: 0.875rem;
   color: var(--text-muted);
 }
@@ -560,18 +565,18 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
 }
 
 .tech-pill {
-  padding: 6px 14px;
+  padding: 7px 13px;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   border-radius: 100px;
   transition: var(--transition);
@@ -595,7 +600,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 26px;
+  padding: 13px 24px;
   font-size: 0.9375rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
@@ -605,19 +610,19 @@ button {
 
 .btn-primary {
   color: var(--bg);
-  background: var(--accent);
-  box-shadow: 0 4px 20px var(--accent-glow);
+  background: linear-gradient(135deg, #e8b84a 0%, #d4a03a 100%);
+  box-shadow: 0 2px 12px rgba(232, 184, 74, 0.25);
 }
 
 .btn-primary:hover {
-  background: #f0c55e;
+  background: linear-gradient(135deg, #f0c55e 0%, #e8b84a 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px var(--accent-glow);
+  box-shadow: 0 6px 20px rgba(232, 184, 74, 0.3);
 }
 
 .btn-ghost {
   color: var(--text-secondary);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-strong);
 }
 
@@ -631,14 +636,16 @@ button {
 /* Hero visual */
 .hero-visual {
   position: relative;
-  width: clamp(280px, 34vw, 420px);
+  width: 100%;
+  max-width: clamp(320px, 38vw, 460px);
   aspect-ratio: 1;
   perspective: 1200px;
+  justify-self: end;
 }
 
 .hero-3d {
   position: absolute;
-  inset: -12%;
+  inset: -8%;
   z-index: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -676,31 +683,32 @@ body.has-3d-hero .hero-visual--3d-ready .hero-frame {
   height: 100%;
   object-fit: cover;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-strong);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
   position: relative;
   z-index: 1;
 }
 
 .hero-frame-corner {
   position: absolute;
-  width: 48px;
-  height: 48px;
-  border: 2px solid var(--accent);
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(232, 184, 74, 0.6);
   z-index: 2;
   pointer-events: none;
 }
 
 .hero-frame-corner--tl {
-  top: -8px;
-  left: -8px;
+  top: -6px;
+  left: -6px;
   border-right: none;
   border-bottom: none;
   border-radius: var(--radius-sm) 0 0 0;
 }
 
 .hero-frame-corner--br {
-  bottom: -8px;
-  right: -8px;
+  bottom: -6px;
+  right: -6px;
   border-left: none;
   border-top: none;
   border-radius: 0 0 var(--radius-sm) 0;
@@ -1262,10 +1270,16 @@ footer {
     text-align: center;
   }
 
+  .hero-name {
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .hero-visual {
     order: -1;
     justify-self: center;
-    max-width: min(340px, 85vw);
+    max-width: min(360px, 88vw);
     margin: 0 auto;
   }
 
