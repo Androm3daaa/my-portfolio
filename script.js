@@ -103,9 +103,46 @@
         const y = ((e.clientY - rect.top) / rect.height) * 100;
         card.style.setProperty('--mouse-x', `${x}%`);
         card.style.setProperty('--mouse-y', `${y}%`);
+
+        const tiltX = ((y - 50) / 50) * -6;
+        const tiltY = ((x - 50) / 50) * 6;
+        card.style.setProperty('--tilt-x', `${tiltX}deg`);
+        card.style.setProperty('--tilt-y', `${tiltY}deg`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--tilt-x', '0deg');
+        card.style.setProperty('--tilt-y', '0deg');
       });
     }
   });
+
+  // ========================================
+  // 3D TILT — PHILOSOPHY + CONTACT
+  // ========================================
+  function bindTilt(selector, maxDeg) {
+    if (prefersReducedMotion) return;
+
+    document.querySelectorAll(selector).forEach(el => {
+      el.addEventListener('mousemove', e => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const tiltX = (0.5 - y) * maxDeg;
+        const tiltY = (x - 0.5) * maxDeg;
+        el.style.setProperty('--tilt-x', `${tiltX}deg`);
+        el.style.setProperty('--tilt-y', `${tiltY}deg`);
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.setProperty('--tilt-x', '0deg');
+        el.style.setProperty('--tilt-y', '0deg');
+      });
+    });
+  }
+
+  bindTilt('.philosophy-card', 8);
+  bindTilt('.contact-card', 5);
 
   // ========================================
   // SMOOTH SCROLL
@@ -194,6 +231,19 @@
     navLinks.forEach(link => {
       link.classList.toggle('active', link.dataset.section === current);
     });
+
+    const hero = document.getElementById('about');
+    if (hero && window.HeroScene3D) {
+      const heroBottom = hero.offsetTop + hero.offsetHeight;
+      const progress = Math.min(1, Math.max(0, window.scrollY / (heroBottom * 0.65)));
+      window.HeroScene3D.setScrollProgress(progress);
+    }
+
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent && !prefersReducedMotion) {
+      const offset = Math.min(window.scrollY * 0.12, 80);
+      heroContent.style.transform = `translateY(${offset}px)`;
+    }
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -240,5 +290,94 @@
     }
 
     setTimeout(type, 800);
+  }
+
+  // ========================================
+  // AMBIENT PARTICLE FIELD (2D CANVAS)
+  // ========================================
+  const ambientCanvas = document.getElementById('ambient-canvas');
+
+  if (ambientCanvas && !prefersReducedMotion) {
+    const ctx = ambientCanvas.getContext('2d');
+    let particles = [];
+    let animId;
+    let width = 0;
+    let height = 0;
+    let pointer = { x: 0.5, y: 0.5 };
+
+    function resizeAmbient() {
+      width = ambientCanvas.width = window.innerWidth;
+      height = ambientCanvas.height = window.innerHeight;
+      const count = width < 768 ? 40 : 70;
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: Math.random(),
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+      }));
+    }
+
+    function drawAmbient() {
+      ctx.clearRect(0, 0, width, height);
+      const scrollFade = 1 - Math.min(1, window.scrollY / (height * 0.8)) * 0.6;
+
+      particles.forEach((p, i) => {
+        p.x += p.vx + (pointer.x - 0.5) * p.z * 0.08;
+        p.y += p.vy + (pointer.y - 0.5) * p.z * 0.08;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        const size = 1 + p.z * 2;
+        const alpha = (0.15 + p.z * 0.35) * scrollFade;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = i % 5 === 0
+          ? `rgba(94, 234, 212, ${alpha})`
+          : i % 7 === 0
+            ? `rgba(232, 184, 74, ${alpha})`
+            : `rgba(244, 244, 245, ${alpha * 0.5})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const other = particles[j];
+          const dx = p.x - other.x;
+          const dy = p.y - other.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(other.x, other.y);
+            ctx.strokeStyle = `rgba(232, 184, 74, ${(1 - dist / 120) * 0.06 * scrollFade})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      });
+
+      animId = requestAnimationFrame(drawAmbient);
+    }
+
+    window.addEventListener('pointermove', e => {
+      pointer.x = e.clientX / width;
+      pointer.y = e.clientY / height;
+    }, { passive: true });
+
+    window.addEventListener('resize', resizeAmbient);
+    resizeAmbient();
+    drawAmbient();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animId);
+      } else {
+        drawAmbient();
+      }
+    });
+  } else if (ambientCanvas) {
+    ambientCanvas.style.display = 'none';
   }
 })();

@@ -24,6 +24,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+    }
+  }
+  </script>
 </head>
 <body>
   <a href="#about" class="skip-link">Skip to content</a>
@@ -32,6 +40,7 @@
     <div class="bg-orb bg-orb--1"></div>
     <div class="bg-orb bg-orb--2"></div>
     <div class="bg-grain"></div>
+    <canvas id="ambient-canvas" aria-hidden="true"></canvas>
   </div>
 
   <div class="scroll-progress" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
@@ -128,6 +137,9 @@
           </div>
 
           <div class="hero-visual">
+            <div class="hero-3d" aria-hidden="true">
+              <canvas id="hero-canvas"></canvas>
+            </div>
             <div class="hero-frame">
               <div class="hero-frame-corner hero-frame-corner--tl" aria-hidden="true"></div>
               <div class="hero-frame-corner hero-frame-corner--br" aria-hidden="true"></div>
@@ -345,6 +357,7 @@
     <span class="toast-message">Email copied to clipboard!</span>
   </div>
 
+  <script type="module" src="scene3d.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -117,6 +117,19 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+#ambient-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+body.has-3d-hero .bg-orb {
+  opacity: 0.2;
+}
+
 @keyframes drift {
   from { transform: translate(0, 0) scale(1); }
   to { transform: translate(30px, -40px) scale(1.08); }
@@ -457,6 +470,12 @@ button {
   animation: reveal 0.9s var(--ease-out) forwards;
 }
 
+.hero-content {
+  position: relative;
+  z-index: 2;
+  will-change: transform;
+}
+
 .hero-eyebrow { animation-delay: 0.05s; }
 .hero-name { animation-delay: 0.15s; }
 .hero-role { animation-delay: 0.25s; }
@@ -610,10 +629,46 @@ button {
 }
 
 /* Hero visual */
+.hero-visual {
+  position: relative;
+  width: clamp(280px, 34vw, 420px);
+  aspect-ratio: 1;
+  perspective: 1200px;
+}
+
+.hero-3d {
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.hero-3d canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.4s var(--ease-out);
+}
+
+.hero-3d--static {
+  display: none;
+}
+
 .hero-frame {
   position: relative;
-  width: clamp(260px, 32vw, 360px);
-  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  transform-style: preserve-3d;
+}
+
+body.has-3d-hero .hero-visual--3d-ready .hero-frame {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.92);
 }
 
 .hero-frame img {
@@ -709,6 +764,7 @@ section {
    ======================================== */
 .section-projects {
   position: relative;
+  perspective: 1400px;
 }
 
 .section-projects::before {
@@ -731,10 +787,13 @@ section {
 .project-card {
   --mouse-x: 50%;
   --mouse-y: 50%;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
   position: relative;
   border-radius: var(--radius-lg);
   cursor: pointer;
   outline: none;
+  perspective: 1000px;
 }
 
 .project-card--featured {
@@ -749,7 +808,9 @@ section {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+  transition: transform 0.35s var(--ease-out), border-color var(--transition), box-shadow var(--transition);
 }
 
 .project-card-inner::before {
@@ -769,7 +830,7 @@ section {
 
 .project-card:hover .project-card-inner,
 .project-card:focus-visible .project-card-inner {
-  transform: translateY(-4px);
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-4px) translateZ(12px);
   border-color: rgba(232, 184, 74, 0.25);
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(232, 184, 74, 0.08);
 }
@@ -916,6 +977,7 @@ section {
    ======================================== */
 .section-philosophy {
   background: linear-gradient(180deg, transparent, rgba(19, 19, 24, 0.5) 30%, transparent);
+  perspective: 1200px;
 }
 
 .philosophy-grid {
@@ -930,13 +992,17 @@ section {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  transition: var(--transition);
+  transform-style: preserve-3d;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.35s var(--ease-out), border-color var(--transition), background var(--transition), box-shadow var(--transition);
 }
 
 .philosophy-card:hover {
   border-color: var(--border-strong);
   background: var(--bg-hover);
-  transform: translateY(-4px);
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-4px) translateZ(8px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -993,6 +1059,11 @@ section {
   border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.4s var(--ease-out);
 }
 
 .contact-card::before {
@@ -1194,6 +1265,8 @@ footer {
   .hero-visual {
     order: -1;
     justify-self: center;
+    max-width: min(340px, 85vw);
+    margin: 0 auto;
   }
 
   .hero-desc {
