@@ -2,12 +2,118 @@
   'use strict';
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const EMAIL = 'janreybalabis23@gmail.com';
+
+  // ========================================
+  // MATRIX RAIN
+  // ========================================
+  const matrixCanvas = document.getElementById('matrix-canvas');
+
+  if (matrixCanvas && !prefersReducedMotion) {
+    const ctx = matrixCanvas.getContext('2d');
+    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン01';
+    let columns = [];
+    let animId;
+    let w = 0;
+    let h = 0;
+    const fontSize = 14;
+
+    function resizeMatrix() {
+      w = matrixCanvas.width = window.innerWidth;
+      h = matrixCanvas.height = window.innerHeight;
+      const colCount = Math.floor(w / fontSize);
+      columns = Array.from({ length: colCount }, () => Math.random() * h / fontSize);
+    }
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(3, 3, 3, 0.08)';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.font = `${fontSize}px JetBrains Mono, monospace`;
+
+      for (let i = 0; i < columns.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = columns[i] * fontSize;
+
+        const brightness = Math.random();
+        ctx.fillStyle = brightness > 0.95
+          ? '#ffffff'
+          : brightness > 0.8
+            ? '#00ffff'
+            : '#00ff41';
+
+        ctx.fillText(char, x, y);
+
+        if (y > h && Math.random() > 0.975) {
+          columns[i] = 0;
+        } else {
+          columns[i]++;
+        }
+      }
+
+      animId = requestAnimationFrame(drawMatrix);
+    }
+
+    window.addEventListener('resize', resizeMatrix);
+    resizeMatrix();
+    drawMatrix();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animId);
+      } else {
+        drawMatrix();
+      }
+    });
+  } else if (matrixCanvas) {
+    matrixCanvas.style.display = 'none';
+  }
+
+  // ========================================
+  // BOOT SEQUENCE
+  // ========================================
+  const bootLines = document.getElementById('bootLines');
+
+  if (bootLines && !prefersReducedMotion) {
+    const lines = [
+      { text: '[ OK ] Initializing janrey.dev v2.0.26...', cls: 'boot-ok' },
+      { text: '[ OK ] Loading kernel modules: html css js python', cls: 'boot-ok' },
+      { text: '[INFO] Location: Philippines (UTC+8)', cls: 'boot-info' },
+      { text: '[ OK ] Status: AVAILABLE', cls: 'boot-ok' },
+    ];
+
+    let delay = 200;
+    lines.forEach(({ text, cls }) => {
+      setTimeout(() => {
+        const line = document.createElement('div');
+        line.className = cls;
+        line.textContent = text;
+        bootLines.appendChild(line);
+      }, delay);
+      delay += 280 + Math.random() * 120;
+    });
+  }
+
+  // ========================================
+  // FRAME CLOCK
+  // ========================================
+  const frameClock = document.getElementById('frameClock');
+
+  function updateClock() {
+    if (!frameClock) return;
+    const now = new Date();
+    frameClock.textContent = now.toTimeString().slice(0, 8);
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
 
   // ========================================
   // MOBILE MENU
   // ========================================
   const mobileMenu = document.getElementById('mobileMenu');
-  const menuBtn = document.querySelector('.mobile-menu-btn');
+  const menuBtn = document.querySelector('.menu-toggle');
   const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
   function setMenuOpen(open) {
@@ -19,17 +125,9 @@
     document.body.style.overflow = open ? 'hidden' : '';
   }
 
-  function toggleMenu() {
-    setMenuOpen(!mobileMenu.classList.contains('active'));
-  }
-
-  menuBtn.addEventListener('click', toggleMenu);
-
+  menuBtn.addEventListener('click', () => setMenuOpen(!mobileMenu.classList.contains('active')));
   mobileMenu.querySelector('.mobile-menu-backdrop').addEventListener('click', () => setMenuOpen(false));
-
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', () => setMenuOpen(false));
-  });
+  mobileLinks.forEach(link => link.addEventListener('click', () => setMenuOpen(false)));
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
@@ -41,12 +139,9 @@
   // ========================================
   // COPY EMAIL
   // ========================================
-  const EMAIL = 'janreybalabis23@gmail.com';
-
   function showToast(message) {
     const toast = document.getElementById('toast');
-    const toastMessage = toast.querySelector('.toast-message');
-    toastMessage.textContent = message;
+    toast.querySelector('.toast-message').textContent = message;
     toast.classList.add('visible');
     clearTimeout(showToast._timer);
     showToast._timer = setTimeout(() => toast.classList.remove('visible'), 3000);
@@ -66,7 +161,7 @@
       showToast('Email copied to clipboard!');
     };
 
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(EMAIL).then(
         () => showToast('Email copied to clipboard!'),
         fallback
@@ -81,68 +176,20 @@
   // ========================================
   // PROJECT CARDS
   // ========================================
-  function openProject(url) {
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
-  }
-
-  document.querySelectorAll('.project-card').forEach(card => {
+  document.querySelectorAll('.project-entry').forEach(card => {
     const url = card.dataset.projectUrl;
 
-    card.addEventListener('click', () => openProject(url));
+    card.addEventListener('click', () => {
+      if (url) window.open(url, '_blank', 'noopener,noreferrer');
+    });
+
     card.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        openProject(url);
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
       }
     });
-
-    if (!prefersReducedMotion) {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty('--mouse-x', `${x}%`);
-        card.style.setProperty('--mouse-y', `${y}%`);
-
-        const tiltX = ((y - 50) / 50) * -6;
-        const tiltY = ((x - 50) / 50) * 6;
-        card.style.setProperty('--tilt-x', `${tiltX}deg`);
-        card.style.setProperty('--tilt-y', `${tiltY}deg`);
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.setProperty('--tilt-x', '0deg');
-        card.style.setProperty('--tilt-y', '0deg');
-      });
-    }
   });
-
-  // ========================================
-  // 3D TILT — PHILOSOPHY + CONTACT
-  // ========================================
-  function bindTilt(selector, maxDeg) {
-    if (prefersReducedMotion) return;
-
-    document.querySelectorAll(selector).forEach(el => {
-      el.addEventListener('mousemove', e => {
-        const rect = el.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-        const tiltX = (0.5 - y) * maxDeg;
-        const tiltY = (x - 0.5) * maxDeg;
-        el.style.setProperty('--tilt-x', `${tiltX}deg`);
-        el.style.setProperty('--tilt-y', `${tiltY}deg`);
-      });
-
-      el.addEventListener('mouseleave', () => {
-        el.style.setProperty('--tilt-x', '0deg');
-        el.style.setProperty('--tilt-y', '0deg');
-      });
-    });
-  }
-
-  bindTilt('.philosophy-card', 8);
-  bindTilt('.contact-card', 5);
 
   // ========================================
   // SMOOTH SCROLL
@@ -156,27 +203,21 @@
       const target = document.querySelector(href);
       if (!target) return;
 
-      const navHeight = document.querySelector('.navbar').offsetHeight;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+      const navHeight = document.querySelector('.term-bar').offsetHeight;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
 
       window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     });
   });
 
   // ========================================
-  // INTERSECTION OBSERVER
+  // REVEAL ON SCROLL
   // ========================================
-  const revealEls = document.querySelectorAll(
-    '.section-header, .project-card, .philosophy-card, .contact-card'
-  );
-
-  revealEls.forEach(el => {
-    el.classList.add('reveal');
-  });
+  const revealEls = document.querySelectorAll('.reveal');
 
   document.querySelectorAll('.projects-grid, .philosophy-grid').forEach(grid => {
-    grid.querySelectorAll('.project-card, .philosophy-card').forEach((card, i) => {
-      card.classList.add(`reveal-delay-${(i % 4) + 1}`);
+    grid.querySelectorAll('.reveal').forEach((el, i) => {
+      el.classList.add(`reveal-delay-${(i % 4) + 1}`);
     });
   });
 
@@ -189,39 +230,31 @@
         }
       });
     },
-    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
   );
 
   revealEls.forEach(el => observer.observe(el));
 
   // ========================================
-  // SCROLL PROGRESS
+  // SCROLL PROGRESS + ACTIVE NAV
   // ========================================
+  const termBar = document.querySelector('.term-bar');
+  const navLinks = document.querySelectorAll('.term-nav-link[data-section]');
   const scrollProgress = document.querySelector('.scroll-progress');
+  const sections = ['about', 'projects', 'philosophy', 'contact'].map(id => ({
+    id,
+    el: document.getElementById(id),
+  }));
 
-  function updateScrollProgress() {
+  function onScroll() {
     const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const scrolled = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
     scrollProgress.style.width = `${scrolled}%`;
     scrollProgress.setAttribute('aria-valuenow', Math.round(scrolled));
-  }
 
-  // ========================================
-  // NAVBAR + ACTIVE SECTION
-  // ========================================
-  const navbar = document.querySelector('.navbar');
-  const navLinks = document.querySelectorAll('.nav-link[data-section]');
-  const sections = ['about', 'projects', 'philosophy', 'contact'].map(id => ({
-    id,
-    el: document.getElementById(id)
-  }));
+    termBar.classList.toggle('scrolled', window.scrollY > 32);
 
-  function onScroll() {
-    updateScrollProgress();
-
-    navbar.classList.toggle('scrolled', window.scrollY > 48);
-
-    const scrollPos = window.scrollY + navbar.offsetHeight + 80;
+    const scrollPos = window.scrollY + termBar.offsetHeight + 64;
     let current = 'about';
 
     sections.forEach(({ id, el }) => {
@@ -231,19 +264,6 @@
     navLinks.forEach(link => {
       link.classList.toggle('active', link.dataset.section === current);
     });
-
-    const hero = document.getElementById('about');
-    if (hero && window.HeroScene3D) {
-      const heroBottom = hero.offsetTop + hero.offsetHeight;
-      const progress = Math.min(1, Math.max(0, window.scrollY / (heroBottom * 0.65)));
-      window.HeroScene3D.setScrollProgress(progress);
-    }
-
-    const heroContent = document.querySelector('.hero-content');
-    if (heroContent && !prefersReducedMotion) {
-      const offset = Math.min(window.scrollY * 0.12, 80);
-      heroContent.style.transform = `translateY(${offset}px)`;
-    }
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -252,118 +272,25 @@
   // ========================================
   // TYPING ANIMATION
   // ========================================
-  const text = 'Jan Rey Balabis';
+  const nameText = 'Jan Rey Balabis';
   const typingText = document.querySelector('.typing-text');
   const cursor = document.querySelector('.typing-cursor');
 
   if (prefersReducedMotion) {
-    typingText.textContent = text;
+    typingText.textContent = nameText;
     if (cursor) cursor.style.display = 'none';
   } else {
     let index = 0;
 
     function type() {
-      typingText.textContent = text.substring(0, index + 1);
+      typingText.textContent = nameText.substring(0, index + 1);
       index++;
 
-      if (index < text.length) {
-        setTimeout(type, 65 + Math.random() * 40);
-      } else if (cursor) {
-        setTimeout(() => {
-          cursor.style.opacity = '0';
-        }, 2000);
+      if (index < nameText.length) {
+        setTimeout(type, 55 + Math.random() * 35);
       }
     }
 
-    setTimeout(type, 800);
-  }
-
-  // ========================================
-  // AMBIENT PARTICLE FIELD (2D CANVAS)
-  // ========================================
-  const ambientCanvas = document.getElementById('ambient-canvas');
-
-  if (ambientCanvas && !prefersReducedMotion) {
-    const ctx = ambientCanvas.getContext('2d');
-    let particles = [];
-    let animId;
-    let width = 0;
-    let height = 0;
-    let pointer = { x: 0.5, y: 0.5 };
-
-    function resizeAmbient() {
-      width = ambientCanvas.width = window.innerWidth;
-      height = ambientCanvas.height = window.innerHeight;
-      const count = width < 768 ? 28 : 45;
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        z: Math.random(),
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: (Math.random() - 0.5) * 0.15,
-      }));
-    }
-
-    function drawAmbient() {
-      ctx.clearRect(0, 0, width, height);
-      const scrollFade = 1 - Math.min(1, window.scrollY / (height * 0.8)) * 0.6;
-
-      particles.forEach((p, i) => {
-        p.x += p.vx + (pointer.x - 0.5) * p.z * 0.08;
-        p.y += p.vy + (pointer.y - 0.5) * p.z * 0.08;
-
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-        if (p.y < 0) p.y = height;
-        if (p.y > height) p.y = 0;
-
-        const size = 1 + p.z * 2;
-        const alpha = (0.1 + p.z * 0.22) * scrollFade;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = i % 5 === 0
-          ? `rgba(94, 234, 212, ${alpha})`
-          : i % 7 === 0
-            ? `rgba(232, 184, 74, ${alpha})`
-            : `rgba(244, 244, 245, ${alpha * 0.5})`;
-        ctx.fill();
-
-        for (let j = i + 1; j < particles.length; j++) {
-          const other = particles[j];
-          const dx = p.x - other.x;
-          const dy = p.y - other.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(232, 184, 74, ${(1 - dist / 120) * 0.06 * scrollFade})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      });
-
-      animId = requestAnimationFrame(drawAmbient);
-    }
-
-    window.addEventListener('pointermove', e => {
-      pointer.x = e.clientX / width;
-      pointer.y = e.clientY / height;
-    }, { passive: true });
-
-    window.addEventListener('resize', resizeAmbient);
-    resizeAmbient();
-    drawAmbient();
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        cancelAnimationFrame(animId);
-      } else {
-        drawAmbient();
-      }
-    });
-  } else if (ambientCanvas) {
-    ambientCanvas.style.display = 'none';
+    setTimeout(type, 1400);
   }
 })();

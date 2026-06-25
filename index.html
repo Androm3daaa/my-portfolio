@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jan Rey Balabis — Developer</title>
-  <meta name="description" content="Jan Rey Balabis — Full-Stack Developer based in the Philippines. Building secure, scalable, and creative digital solutions.">
-  <meta name="keywords" content="Janrey Balabis, Jan Rey Balabis, Full-Stack Developer, Philippines, Portfolio, Web Developer">
+  <title>janrey.dev — Jan Rey Balabis</title>
+  <meta name="description" content="Jan Rey Balabis — Developer based in the Philippines. Building secure, scalable, and creative digital solutions.">
+  <meta name="keywords" content="Janrey Balabis, Jan Rey Balabis, Developer, Philippines, Portfolio, Web Developer">
   <meta name="author" content="Jan Rey Balabis">
   <meta name="google-site-verification" content="OzEyHfskI07u-hRQVMi2i2MtQn9s-YwymLkjeI2Rp_U" />
 
@@ -23,341 +23,386 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
-
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
-    }
-  }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <a href="#about" class="skip-link">Skip to content</a>
+  <a href="#about" class="skip-link">skip_to_content()</a>
 
-  <div class="bg-layer" aria-hidden="true">
-    <div class="bg-orb bg-orb--1"></div>
-    <div class="bg-orb bg-orb--2"></div>
-    <div class="bg-grain"></div>
-    <canvas id="ambient-canvas" aria-hidden="true"></canvas>
-  </div>
+  <canvas id="matrix-canvas" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="crt-vignette" aria-hidden="true"></div>
 
   <div class="scroll-progress" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
-  <nav class="navbar" aria-label="Main navigation">
-    <div class="container nav-inner">
-      <a href="#" class="logo" aria-label="janrey.dev home">janrey<span class="logo-dot">.dev</span></a>
+  <header class="term-bar" aria-label="Main navigation">
+    <div class="container term-bar-inner">
+      <a href="#" class="hostname" aria-label="janrey.dev home">
+        <span class="hostname-user">janrey</span><span class="hostname-at">@</span><span class="hostname-host">dev</span><span class="hostname-tld">.local</span>
+      </a>
 
-      <div class="nav-links">
-        <a href="#about" class="nav-link" data-section="about">About</a>
-        <a href="#projects" class="nav-link" data-section="projects">Projects</a>
-        <a href="#philosophy" class="nav-link" data-section="philosophy">Philosophy</a>
-        <a href="#contact" class="nav-link" data-section="contact">Contact</a>
-      </div>
+      <nav class="term-nav" aria-label="Section navigation">
+        <a href="#about" class="term-nav-link" data-section="about"><span class="nav-cmd">./about</span></a>
+        <a href="#projects" class="term-nav-link" data-section="projects"><span class="nav-cmd">./projects</span></a>
+        <a href="#philosophy" class="term-nav-link" data-section="philosophy"><span class="nav-cmd">./philosophy</span></a>
+        <a href="#contact" class="term-nav-link" data-section="contact"><span class="nav-cmd">./contact</span></a>
+      </nav>
 
-      <div class="nav-actions">
-        <div class="status-badge" aria-label="Available for work">
-          <span class="status-dot" aria-hidden="true"></span>
-          Available
+      <div class="term-bar-right">
+        <div class="status-pill" aria-label="Available for work">
+          <span class="status-led" aria-hidden="true"></span>
+          <span class="status-text">[AVAILABLE]</span>
         </div>
-        <button class="mobile-menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
           <span></span>
           <span></span>
           <span></span>
         </button>
       </div>
     </div>
-  </nav>
+  </header>
 
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <div class="mobile-menu-backdrop"></div>
     <div class="mobile-menu-panel">
+      <p class="mobile-prompt" aria-hidden="true">janrey@dev:~$ ls sections/</p>
       <nav class="mobile-menu-nav" aria-label="Mobile navigation">
-        <a href="#about" class="mobile-nav-link">About</a>
-        <a href="#projects" class="mobile-nav-link">Projects</a>
-        <a href="#philosophy" class="mobile-nav-link">Philosophy</a>
-        <a href="#contact" class="mobile-nav-link">Contact</a>
+        <a href="#about" class="mobile-nav-link">./about</a>
+        <a href="#projects" class="mobile-nav-link">./projects</a>
+        <a href="#philosophy" class="mobile-nav-link">./philosophy</a>
+        <a href="#contact" class="mobile-nav-link">./contact</a>
       </nav>
       <div class="mobile-menu-footer">
-        <div class="status-badge">
-          <span class="status-dot" aria-hidden="true"></span>
-          Available for work
+        <div class="status-pill">
+          <span class="status-led" aria-hidden="true"></span>
+          <span class="status-text">[AVAILABLE]</span>
         </div>
       </div>
     </div>
   </div>
 
-  <main>
-    <section class="hero" id="about">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <p class="hero-eyebrow">
-              <span class="status-dot" aria-hidden="true"></span>
-              Hello, I'm
-            </p>
-
-            <h1 class="hero-name">
-              <span class="typing-text" aria-label="Jan Rey Balabis"></span><span class="typing-cursor" aria-hidden="true">|</span>
-            </h1>
-
-            <p class="hero-role">Developer</p>
-
-            <p class="hero-desc">
-              I build secure, scalable software with detail-driven interfaces
-              and clean architecture — experiences that actually work.
-            </p>
-
-            <p class="hero-location">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-              Philippines
-            </p>
-
-            <div class="tech-stack" aria-label="Technologies">
-              <span class="tech-pill">HTML</span>
-              <span class="tech-pill">CSS</span>
-              <span class="tech-pill">JavaScript</span>
-              <span class="tech-pill">Python</span>
-              <span class="tech-pill">C++</span>
-              <span class="tech-pill">Java</span>
-            </div>
-
-            <div class="hero-actions">
-              <a href="assets/pdf/JANREY BALABIS - CV.pdf" target="_blank" rel="noopener" class="btn btn-primary">
-                Download CV
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-              </a>
-              <a href="#projects" class="btn btn-ghost">View projects</a>
-            </div>
-          </div>
-
-          <div class="hero-visual">
-            <div class="hero-3d" aria-hidden="true">
-              <canvas id="hero-canvas"></canvas>
-            </div>
-            <div class="hero-frame">
-              <div class="hero-frame-corner hero-frame-corner--tl" aria-hidden="true"></div>
-              <div class="hero-frame-corner hero-frame-corner--br" aria-hidden="true"></div>
-              <img src="assets/images/profile.jpg" alt="Jan Rey Balabis" width="420" height="420" />
-            </div>
-          </div>
+  <main class="terminal-main">
+  <!-- HERO / ABOUT -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="term-window term-window--hero">
+        <div class="term-titlebar" aria-hidden="true">
+          <span class="term-dot term-dot--red"></span>
+          <span class="term-dot term-dot--amber"></span>
+          <span class="term-dot term-dot--green"></span>
+          <span class="term-title">janrey@dev: ~/profile — bash</span>
         </div>
-      </div>
-    </section>
+        <div class="term-body">
+          <pre class="ascii-art" aria-hidden="true">    _           _                        
+   | | __ _ ___| |__  _ __ __ _ _ __ ___ 
+   | |/ _` / __| '_ \| '__/ _` | '_ ` _ \
+   | | (_| \__ \ | | | | | (_| | | | | | |
+   |_|\__,_|___/_| |_|_|  \__,_|_| |_| |_|
+              .dev v2.0.26</pre>
 
-    <section id="projects" class="section-projects">
-      <div class="container">
-        <header class="section-header">
-          <span class="section-label">Featured Work</span>
-          <h2 class="section-title">Projects that matter.</h2>
-          <p class="section-desc">Selected work — click any card to view on GitHub.</p>
-        </header>
+          <div class="hero-grid">
+            <div class="hero-terminal">
+              <div class="boot-lines" id="bootLines" aria-hidden="true"></div>
 
-        <div class="projects-grid">
-          <article class="project-card project-card--featured" data-project-url="https://github.com/Androm3daaa/Notes" tabindex="0" role="link" aria-label="Andromeda — view on GitHub">
-            <div class="project-card-inner">
-              <div class="mac-header" aria-hidden="true">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
-              </div>
-              <div class="project-card-body">
-                <div class="project-card-text">
-                  <div class="project-card-top">
-                    <h3 class="card-title">Andromeda</h3>
-                    <span class="card-link-icon" aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                    </span>
-                  </div>
-                  <p class="card-description">
-                    Personal encyclopedia with full-text search. Markdown hubs rendered in Astro, indexed client-side via Pagefind, deployed on Cloudflare Pages.
-                  </p>
-                  <div class="card-tags">
-                    <span class="card-tag">Astro</span>
-                    <span class="card-tag">Pagefind</span>
-                    <span class="card-tag">Cloudflare</span>
-                  </div>
-                </div>
-                <div class="card-preview card-preview--screenshot">
-                  <img src="assets/images/projects/andromeda.png" alt="Andromeda knowledge base interface" loading="lazy" />
-                </div>
-              </div>
-            </div>
-          </article>
+              <p class="cmd-line">
+                <span class="prompt">janrey@dev:~$</span>
+                <span class="cmd">whoami</span>
+              </p>
+              <h1 class="hero-name glitch" data-text="Jan Rey Balabis">
+                <span class="typing-text" aria-label="Jan Rey Balabis"></span><span class="typing-cursor" aria-hidden="true">_</span>
+              </h1>
 
-          <article class="project-card" data-project-url="https://github.com/Androm3daaa/Synapse" tabindex="0" role="link" aria-label="Synapse — view on GitHub">
-            <div class="project-card-inner">
-              <div class="mac-header" aria-hidden="true">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
+              <p class="cmd-line">
+                <span class="prompt">janrey@dev:~$</span>
+                <span class="cmd">cat role.txt</span>
+              </p>
+              <p class="hero-role">Developer</p>
+
+              <p class="cmd-line">
+                <span class="prompt">janrey@dev:~$</span>
+                <span class="cmd">cat bio.md</span>
+              </p>
+              <p class="hero-bio">
+                I build secure, scalable software with detail-driven interfaces
+                and clean architecture — experiences that actually work.
+              </p>
+
+              <p class="cmd-line">
+                <span class="prompt">janrey@dev:~$</span>
+                <span class="cmd">geoip lookup</span>
+              </p>
+              <p class="hero-location">
+                <span class="loc-icon" aria-hidden="true">></span> Philippines
+              </p>
+
+              <p class="cmd-line">
+                <span class="prompt">janrey@dev:~$</span>
+                <span class="cmd">ls stack/</span>
+              </p>
+              <div class="tech-stack" aria-label="Technologies">
+                <span class="tech-tag">HTML</span>
+                <span class="tech-tag">CSS</span>
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">C++</span>
+                <span class="tech-tag">Java</span>
               </div>
-              <div class="project-card-body">
-                <div class="project-card-text">
-                  <div class="project-card-top">
-                    <h3 class="card-title">Synapse</h3>
-                    <span class="card-link-icon" aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                    </span>
-                  </div>
-                  <p class="card-description">
-                    Android workflow automation — connect apps, run AI-assisted steps, approve actions, then execute. One hub for business workflows beyond email and calendar.
-                  </p>
-                  <div class="card-tags">
-                    <span class="card-tag">Android</span>
-                    <span class="card-tag">Kotlin</span>
-                    <span class="card-tag">AI</span>
-                  </div>
-                </div>
-                <div class="card-preview card-preview--icon">
-                  <img src="assets/images/projects/synapse.png" alt="Synapse brain logo" loading="lazy" />
-                </div>
+
+              <p class="cmd-line cmd-line--actions">
+                <span class="prompt">janrey@dev:~$</span>
+              </p>
+              <div class="hero-actions">
+                <a href="assets/pdf/JANREY BALABIS - CV.pdf" target="_blank" rel="noopener" class="cmd-btn cmd-btn--primary">
+                  <span class="cmd-btn-prefix">$</span> ./download_cv.sh
+                </a>
+                <a href="#projects" class="cmd-btn">
+                  <span class="cmd-btn-prefix">></span> view_projects
+                </a>
               </div>
             </div>
-          </article>
 
-          <article class="project-card" data-project-url="https://github.com/Androm3daaa/alpas-simulation-project" tabindex="0" role="link" aria-label="ALPAS — view on GitHub">
-            <div class="project-card-inner">
-              <div class="mac-header" aria-hidden="true">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
-              </div>
-              <div class="project-card-body">
-                <div class="project-card-text">
-                  <div class="project-card-top">
-                    <h3 class="card-title">ALPAS</h3>
-                    <span class="card-link-icon" aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                    </span>
-                  </div>
-                  <p class="card-description">
-                    School fire and evacuation simulation. Agent-based evacuation modeling, fire dynamics, and interactive 2D/3D visualization for academic safety planning.
-                  </p>
-                  <div class="card-tags">
-                    <span class="card-tag">React</span>
-                    <span class="card-tag">FastAPI</span>
-                    <span class="card-tag">Three.js</span>
-                  </div>
+            <div class="hero-visual">
+              <div class="frame-panel">
+                <div class="frame-header" aria-hidden="true">
+                  <span>framebuffer://profile.jpg</span>
+                  <span class="frame-status">[LIVE]</span>
                 </div>
-                <div class="card-preview card-preview--screenshot">
-                  <img src="assets/images/projects/alpas.png" alt="ALPAS fire and evacuation simulator" loading="lazy" />
+                <div class="frame-body">
+                  <img src="assets/images/profile.jpg" alt="Jan Rey Balabis" width="420" height="420" />
+                  <div class="frame-scan" aria-hidden="true"></div>
+                </div>
+                <div class="frame-footer" aria-hidden="true">
+                  <span>640x640</span>
+                  <span>RGB</span>
+                  <span id="frameClock">00:00:00</span>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="philosophy" class="section-philosophy">
-      <div class="container">
-        <header class="section-header">
-          <span class="section-label">Philosophy</span>
-          <h2 class="section-title">Interfaces you can feel.</h2>
-          <p class="section-desc">Principles that guide how I design and build.</p>
-        </header>
-
-        <div class="philosophy-grid">
-          <article class="philosophy-card">
-            <div class="philosophy-number" aria-hidden="true">01</div>
-            <div class="philosophy-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <h3 class="philosophy-title">Motion</h3>
-            <p class="philosophy-desc">Micro-interactions that confirm intent — never distracting, always purposeful.</p>
-          </article>
-
-          <article class="philosophy-card">
-            <div class="philosophy-number" aria-hidden="true">02</div>
-            <div class="philosophy-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
-            </div>
-            <h3 class="philosophy-title">Type</h3>
-            <p class="philosophy-desc">Typography that guides the eye and establishes clear hierarchy. Every letter earns its place.</p>
-          </article>
-
-          <article class="philosophy-card">
-            <div class="philosophy-number" aria-hidden="true">03</div>
-            <div class="philosophy-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            </div>
-            <h3 class="philosophy-title">Feedback</h3>
-            <p class="philosophy-desc">Clear, immediate responses to user actions. The interface always communicates what's happening.</p>
-          </article>
-
-          <article class="philosophy-card">
-            <div class="philosophy-number" aria-hidden="true">04</div>
-            <div class="philosophy-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <h3 class="philosophy-title">Craft</h3>
-            <p class="philosophy-desc">Spacing, timing, transitions — the details that separate good from great.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section-contact">
-      <div class="container">
-        <div class="contact-card">
-          <header class="contact-header">
-            <span class="section-label">Contact</span>
-            <h2 class="contact-heading">Let's build something that works.</h2>
-            <p class="contact-sub">
-              Open to freelance, collaborations, and full-time opportunities.
-            </p>
-          </header>
-
-          <div class="contact-actions">
-            <button type="button" class="email-btn" id="emailBtn" aria-label="Copy email address janreybalabis23@gmail.com">
-              <span class="email-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </span>
-              <span class="email-text">janreybalabis23@gmail.com</span>
-              <span class="email-hint">Click to copy</span>
-            </button>
-
-            <div class="social-links" aria-label="Social links">
-              <a href="https://github.com/Androm3daaa" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                </svg>
-              </a>
-              <a href="https://x.com/Janrey_Balabis" target="_blank" rel="noopener noreferrer" class="social-link" title="X (Twitter)">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-              </a>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <div class="container">
+      <div class="section-intro reveal">
+        <p class="cmd-line">
+          <span class="prompt">janrey@dev:~$</span>
+          <span class="cmd">ls -la ~/projects/</span>
+        </p>
+        <h2 class="section-heading glitch" data-text="Projects that matter.">Projects that matter.</h2>
+        <p class="section-sub">// Selected work — click any entry to open on GitHub</p>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-entry project-entry--featured reveal" data-project-url="https://github.com/Androm3daaa/Notes" tabindex="0" role="link" aria-label="Andromeda — view on GitHub">
+          <div class="term-window">
+            <div class="term-titlebar" aria-hidden="true">
+              <span class="term-dot term-dot--red"></span>
+              <span class="term-dot term-dot--amber"></span>
+              <span class="term-dot term-dot--green"></span>
+              <span class="term-title">~/projects/andromeda — vim</span>
+            </div>
+            <div class="term-body project-body">
+              <div class="project-meta">
+                <div class="project-header">
+                  <h3 class="project-name">Andromeda</h3>
+                  <span class="project-link" aria-hidden="true">[OPEN]</span>
+                </div>
+                <p class="project-desc">
+                  Personal encyclopedia with full-text search. Markdown hubs rendered in Astro, indexed client-side via Pagefind, deployed on Cloudflare Pages.
+                </p>
+                <div class="project-tags">
+                  <span class="project-tag">Astro</span>
+                  <span class="project-tag">Pagefind</span>
+                  <span class="project-tag">Cloudflare</span>
+                </div>
+              </div>
+              <div class="project-preview">
+                <img src="assets/images/projects/andromeda.png" alt="Andromeda knowledge base interface" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-entry reveal" data-project-url="https://github.com/Androm3daaa/Synapse" tabindex="0" role="link" aria-label="Synapse — view on GitHub">
+          <div class="term-window">
+            <div class="term-titlebar" aria-hidden="true">
+              <span class="term-dot term-dot--red"></span>
+              <span class="term-dot term-dot--amber"></span>
+              <span class="term-dot term-dot--green"></span>
+              <span class="term-title">~/projects/synapse — vim</span>
+            </div>
+            <div class="term-body project-body">
+              <div class="project-meta">
+                <div class="project-header">
+                  <h3 class="project-name">Synapse</h3>
+                  <span class="project-link" aria-hidden="true">[OPEN]</span>
+                </div>
+                <p class="project-desc">
+                  Android workflow automation — connect apps, run AI-assisted steps, approve actions, then execute. One hub for business workflows beyond email and calendar.
+                </p>
+                <div class="project-tags">
+                  <span class="project-tag">Android</span>
+                  <span class="project-tag">Kotlin</span>
+                  <span class="project-tag">AI</span>
+                </div>
+              </div>
+              <div class="project-preview project-preview--icon">
+                <img src="assets/images/projects/synapse.png" alt="Synapse brain logo" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-entry reveal" data-project-url="https://github.com/Androm3daaa/alpas-simulation-project" tabindex="0" role="link" aria-label="ALPAS — view on GitHub">
+          <div class="term-window">
+            <div class="term-titlebar" aria-hidden="true">
+              <span class="term-dot term-dot--red"></span>
+              <span class="term-dot term-dot--amber"></span>
+              <span class="term-dot term-dot--green"></span>
+              <span class="term-title">~/projects/alpas — vim</span>
+            </div>
+            <div class="term-body project-body">
+              <div class="project-meta">
+                <div class="project-header">
+                  <h3 class="project-name">ALPAS</h3>
+                  <span class="project-link" aria-hidden="true">[OPEN]</span>
+                </div>
+                <p class="project-desc">
+                  School fire and evacuation simulation. Agent-based evacuation modeling, fire dynamics, and interactive 2D/3D visualization for academic safety planning.
+                </p>
+                <div class="project-tags">
+                  <span class="project-tag">React</span>
+                  <span class="project-tag">FastAPI</span>
+                  <span class="project-tag">Three.js</span>
+                </div>
+              </div>
+              <div class="project-preview">
+                <img src="assets/images/projects/alpas.png" alt="ALPAS fire and evacuation simulator" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section class="section" id="philosophy">
+    <div class="container">
+      <div class="section-intro reveal">
+        <p class="cmd-line">
+          <span class="prompt">janrey@dev:~$</span>
+          <span class="cmd">man design_principles</span>
+        </p>
+        <h2 class="section-heading glitch" data-text="Interfaces you can feel.">Interfaces you can feel.</h2>
+        <p class="section-sub">// Principles that guide how I design and build.</p>
+      </div>
+
+      <div class="philosophy-grid">
+        <article class="philosophy-entry reveal">
+          <div class="phil-line">
+            <span class="phil-num">01</span>
+            <span class="phil-sym" aria-hidden="true">//</span>
+            <h3 class="phil-title">Motion</h3>
+          </div>
+          <p class="phil-desc">Micro-interactions that confirm intent — never distracting, always purposeful.</p>
+        </article>
+
+        <article class="philosophy-entry reveal">
+          <div class="phil-line">
+            <span class="phil-num">02</span>
+            <span class="phil-sym" aria-hidden="true">//</span>
+            <h3 class="phil-title">Type</h3>
+          </div>
+          <p class="phil-desc">Typography that guides the eye and establishes clear hierarchy. Every letter earns its place.</p>
+        </article>
+
+        <article class="philosophy-entry reveal">
+          <div class="phil-line">
+            <span class="phil-num">03</span>
+            <span class="phil-sym" aria-hidden="true">//</span>
+            <h3 class="phil-title">Feedback</h3>
+          </div>
+          <p class="phil-desc">Clear, immediate responses to user actions. The interface always communicates what's happening.</p>
+        </article>
+
+        <article class="philosophy-entry reveal">
+          <div class="phil-line">
+            <span class="phil-num">04</span>
+            <span class="phil-sym" aria-hidden="true">//</span>
+            <h3 class="phil-title">Craft</h3>
+          </div>
+          <p class="phil-desc">Spacing, timing, transitions — the details that separate good from great.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="term-window term-window--contact reveal">
+        <div class="term-titlebar" aria-hidden="true">
+          <span class="term-dot term-dot--red"></span>
+          <span class="term-dot term-dot--amber"></span>
+          <span class="term-dot term-dot--green"></span>
+          <span class="term-title">janrey@dev: ~/contact — mail</span>
+        </div>
+        <div class="term-body contact-body">
+          <p class="cmd-line">
+            <span class="prompt">janrey@dev:~$</span>
+            <span class="cmd">echo $OPPORTUNITIES</span>
+          </p>
+          <h2 class="contact-heading glitch" data-text="Let's build something that works.">Let's build something that works.</h2>
+          <p class="contact-sub">
+            Open to freelance, collaborations, and full-time opportunities.
+          </p>
+
+          <p class="cmd-line">
+            <span class="prompt">janrey@dev:~$</span>
+            <span class="cmd">cat email.txt</span>
+          </p>
+          <button type="button" class="email-cmd" id="emailBtn" aria-label="Copy email address janreybalabis23@gmail.com">
+            <span class="email-prefix">$</span>
+            <span class="email-addr">janreybalabis23@gmail.com</span>
+            <span class="email-hint">// click to copy</span>
+          </button>
+
+          <p class="cmd-line">
+            <span class="prompt">janrey@dev:~$</span>
+            <span class="cmd">ls links/</span>
+          </p>
+          <div class="social-links" aria-label="Social links">
+            <a href="https://github.com/Androm3daaa" target="_blank" rel="noopener noreferrer" class="social-cmd" title="GitHub">
+              <span class="social-prefix">></span> github
+            </a>
+            <a href="https://x.com/Janrey_Balabis" target="_blank" rel="noopener noreferrer" class="social-cmd" title="X (Twitter)">
+              <span class="social-prefix">></span> x/twitter
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   </main>
 
-  <footer>
+  <footer class="term-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">© 2026 Jan Rey Balabis · Philippines</p>
-      <p class="footer-made">Built with care</p>
+      <p class="footer-line">
+        <span class="prompt">janrey@dev:~$</span> echo "© 2026 Jan Rey Balabis · Philippines"
+      </p>
+      <p class="footer-line footer-muted">// built with vim, caffeine, and questionable life choices</p>
     </div>
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
-    <span class="toast-icon" aria-hidden="true">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    </span>
+    <span class="toast-prefix" aria-hidden="true">[OK]</span>
     <span class="toast-message">Email copied to clipboard!</span>
   </div>
 
-  <script type="module" src="scene3d.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
