@@ -244,10 +244,8 @@ button {
   text-shadow: 0 0 12px var(--matrix-glow);
 }
 
-.hostname-user { color: var(--matrix); }
-.hostname-at { color: var(--text-muted); }
-.hostname-host { color: var(--cyan); }
-.hostname-tld { color: var(--text-dim); }
+.hostname-name { color: var(--matrix); }
+.hostname-tld { color: var(--cyan); }
 
 .term-nav {
   display: flex;
